@@ -7,5 +7,10 @@ if __name__ == "__main__":
     load_dotenv()
 
     api = RiotApiClient(base_url="https://na1.api.riotgames.com/lol/", token_provider=RiotTokenProvider())
+    
+    # here is my uuid
     results = api.get("summoner/v4/summoners/by-name/SchroDog2")
     print()
+
+    # get match history
+    
