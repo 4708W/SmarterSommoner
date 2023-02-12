@@ -1,2 +1,9 @@
-python-dotenv
 requests
+pandas
+
+# database
+# sqlite
+sqlalchemy
+
+# environment
+python-dotenv

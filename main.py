@@ -1,16 +1,47 @@
-from api.token_provider import RiotTokenProvider
-from dotenv import load_dotenv
+import itertools
+import pandas as pd
 
-from riot.riot_api_client import RiotApiClient
+from dotenv import load_dotenv
+from api.riot_api_client import RiotApiClient
+
+# todo: try except raise assert api key there
+load_dotenv()
+
+
+def get_summoner_puuid(summoner_name: str) -> str:
+    """returns player id"""
+    base_url = "https://na1.api.riotgames.com"
+    endpoint = f"lol/summoner/v4/summoners/by-name/{summoner_name}"
+    api = RiotApiClient(base_url)
+    return api.get(endpoint).json()["puuid"]
+
+
+
 
 if __name__ == "__main__":
-    load_dotenv()
+    # get a match
+    results = []
+    match_ids = [
+        "NA1_4574135601",
+    ]
+    for match_id in match_ids:
+        match_dto = get_match(match_id)
+        
+        match_id = match_dto["metadata"]["matchId"]
+        participants = match_dto["metadata"]["participants"]
+        win = [ i["win"] for i in match_dto["info"]["participants"] ]
 
-    api = RiotApiClient(base_url="https://na1.api.riotgames.com/lol/", token_provider=RiotTokenProvider())
-    
-    # here is my uuid
-    results = api.get("summoner/v4/summoners/by-name/SchroDog2")
+        records = zip(itertools.repeat(match_id), participants, win)
+
+
+        # append match id
+        pd.DataFrame(records, columns=["match_id", "puuid", "win"])
+
+
+        # results.append({
+        #     "match_id": ,
+        #     "participants": match_dto["metadata"]["participants"],
+        #     "win":  [ i["win"] for i in match_dto["info"]["participants"] ]
+        # })
+
     print()
-
-    # get match history
-    
